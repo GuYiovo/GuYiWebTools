@@ -1,102 +1,113 @@
-/* ─── 字体 ──────────────────────────────────────── */
+/* ─── 字体与 iOS 全局手感优化 ──────────────────────── */
 body {
-    font-family: 'Quicksand', sans-serif;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-textarea,
-.font-mono,
-select,
-input[type="text"] {
-    font-family: 'JetBrains Mono', monospace;
-    text-shadow: none;
+    font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    
+    /* 核心：阻止 iOS 橡皮筋回弹效果，并禁止误长按选中文本引发原生菜单 */
+    overscroll-behavior-y: none; 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* ─── 水晶面板 ──────────────────────────────────── */
+/* 允许文本框输入区正常选中与操作 */
+textarea, input[type="text"], .font-mono, select {
+    font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+    text-shadow: none;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* ─── iOS 安全区沉浸式适配 (刘海/小黑条) ───────────── */
+#topNav {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem) !important;
+}
+#mainContent {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 5rem) !important;
+}
+#mobTabs {
+    top: calc(env(safe-area-inset-top, 0px) + 4rem) !important;
+}
+#bottomBar {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem) !important;
+}
+/* 针对底部弹窗留出安全区 */
+.safe-pb { 
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem) !important; 
+}
+
+/* ─── 水晶面板 (拟物毛玻璃) ────────────────────────── */
 .glass-panel {
-    background: rgba(20, 20, 30, 0.25);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 4px 30px rgba(0, 0, 0, 0.1),
-        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    background: rgba(20, 20, 25, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.25); 
+    border-left: 1px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.02);
     border-radius: 24px;
 }
-
-/* 深色变体：用于设置项内嵌面板，取代原来的 Tailwind !强制覆写 */
 .glass-panel--dark {
-    background: rgba(0, 0, 0, 0.20);
-    border-color: transparent;
-    border-radius: 12px;
-    box-shadow: none;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Tab 激活状态 ───────────────────────────────── */
 .tab-active {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 105, 180, 0.2);
+    border: 1px solid rgba(255, 105, 180, 0.5);
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-/* ─── 代码编辑区 ─────────────────────────────────── */
+/* ─── 代码输入区 ─────────────────────────────────── */
 .input-area {
-    background: rgba(0, 0, 0, 0.45);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.3s, border-color 0.3s;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .input-area:focus-within {
-    background: rgba(0, 0, 0, 0.6);
-    border-color: rgba(255, 105, 180, 0.5);
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 105, 180, 0.6);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.15), inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
-
-/* ─── 代码文字颜色 ───────────────────────────────── */
 #sourceInput {
-    color: #e2e8f0;
-    caret-color: #f9a8d4; /* 粉色光标 */
+    color: #f8fafc;
+    caret-color: #f472b6;
 }
 
-/* ─── 按钮 ───────────────────────────────────────── */
+/* ─── 渐变主按钮 ─────────────────────────────────── */
 .btn-primary {
-    background: linear-gradient(90deg, #ff7eb3 0%, #ff758c 100%);
-    box-shadow: 0 5px 20px rgba(255, 117, 140, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-.btn-primary:hover {
-    box-shadow: 0 8px 28px rgba(255, 117, 140, 0.55);
-}
-.btn-primary:active {
-    transform: scale(0.96);
-    box-shadow: 0 3px 12px rgba(255, 117, 140, 0.3);
+    background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 100%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* ─── Select 样式修正 ────────────────────────────── */
-select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-}
+/* ─── 自定义优雅滚动条 ────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.3); border-radius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 105, 180, 0.6); }
 
-/* ─── 滚动条隐藏 ─────────────────────────────────── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ─── iOS 安全区 ─────────────────────────────────── */
-.safe-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }
-
-/* ─── 键盘弹起时底栏上移（移动端）──────────────── */
-@supports (height: 100dvh) {
-    .min-h-screen { min-height: 100dvh; }
+/* ─── 表单 Select 箭头 ───────────────────────────── */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23f472b6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px !important;
 }
 
-/* ─── 淡入动画 ───────────────────────────────────── */
+/* ─── 动画 ───────────────────────────────────────── */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0);}
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
